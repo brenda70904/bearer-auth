@@ -1,6 +1,8 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.SECRET || "SECRET";
 
 const userSchema = (sequelize, DataTypes) => {
   const model = sequelize.define('User', {
@@ -8,9 +10,12 @@ const userSchema = (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING, allowNull: false, },
     token: {
       type: DataTypes.VIRTUAL,
-      get() {
-        return jwt.sign({ username: this.username });
-      }
+      get() { // a method that called on "read "
+        return jwt.sign({ username: this.username },SECRET,{expiresIn:1000 * 60 * 60 * 24 * 7});
+      },
+      // set() { // a method that runs when set with "="
+      //   return jwt.sign({ username: this.username },SECRET,{expiresIn:1000 * 60 * 60 * 24 * 7});
+      // }
     }
   });
 
