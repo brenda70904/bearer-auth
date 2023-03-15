@@ -1,8 +1,8 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
-const SECRET = process.env.SECRET || "SECRET";
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.SECRET || 'SECRET';
 
 const userSchema = (sequelize, DataTypes) => {
   const model = sequelize.define('User', {
@@ -10,13 +10,13 @@ const userSchema = (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING, allowNull: false },
     token: {
       type: DataTypes.VIRTUAL,
-      get() { // a method that called on "read "
+      get() { // a method that called on 'read '
         return jwt.sign({ username: this.username }, SECRET, { expiresIn: 1000 * 60 * 60 * 24 * 7 });
       },
-      // set() { // a method that runs when set with "="
+      // set() { // a method that runs when set with '='
       //   return jwt.sign({ username: this.username },SECRET,{expiresIn:1000 * 60 * 60 * 24 * 7});
       // }
-    }
+    },
   });
 
   model.beforeCreate(async (user) => {
@@ -30,7 +30,7 @@ const userSchema = (sequelize, DataTypes) => {
     const valid = await bcrypt.compare(password, user.password);
     if (valid) { return user; }
     throw new Error('Invalid User');
-  }
+  };
 
   // Bearer AUTH: Validating a token
   model.authenticateToken = async function (token) {
@@ -39,11 +39,11 @@ const userSchema = (sequelize, DataTypes) => {
       console.log(`playload:${parsedToken}`);
       const user = await this.findOne({ where: { username: parsedToken.username } });
       if (user) { return user; }
-      throw new Error("User Not Found");
+      throw new Error('User Not Found');
     } catch (e) {
       throw new Error(e.message);
-    };
-  }
+    }
+  };
 
   return model;
 };

@@ -5,13 +5,13 @@ const { users } = require('../models/index.js');
 
 module.exports = async (req, res, next) => {
 
-  if (!req.headers.authorization) { next("no basic auth header")}; // how do we know we need next here????? 
+  if (!req.headers.authorization) { next('no basic auth header');}// how do we know we need next here????? 
 
-  let basic = req.headers.authorization.split(" ")[1]; //or pop() will work too
+  let basic = req.headers.authorization.split(' ')[1]; //or pop() will work too
   let [username, pass] = base64.decode(basic).split(':');
 
   try {
-    req.user = await users.authenticateBasic(username, pass)
+    req.user = await users.authenticateBasic(username, pass);
     next();
   } catch (e) {
     console.error(e);
